@@ -19,7 +19,8 @@ export function createStore () {
         show: [],
         ask: [],
         job: []
-      }
+      },
+      product: {}
     },
     actions,
     mutations,

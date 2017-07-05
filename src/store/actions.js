@@ -1,7 +1,8 @@
 import {
   fetchUser,
   fetchItems,
-  fetchIdsByType
+  fetchIdsByType,
+  myFetch
 } from '../api'
 
 export default {
@@ -45,5 +46,13 @@ export default {
     return state.users[id]
       ? Promise.resolve(state.users[id])
       : fetchUser(id).then(user => commit('SET_USER', { id, user }))
+  },
+  FETCH_PRODUCT: ({ commit, state }) => {
+    return myFetch('/api/insurance/product/list/query.json?access_token=XqTest9c5a71a1802952b59c5d137a8aecaadf1045feaa')
+    .then(data => {
+      let d = data.data.data.items
+      // console.log(d)
+      commit('SET_PRODUCT', { d })
+    })
   }
 }

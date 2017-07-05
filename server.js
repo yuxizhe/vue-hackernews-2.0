@@ -6,7 +6,7 @@ const favicon = require('serve-favicon')
 const compression = require('compression')
 const resolve = file => path.resolve(__dirname, file)
 const { createBundleRenderer } = require('vue-server-renderer')
-
+const requestProxy = require('express-request-proxy')
 const isProd = process.env.NODE_ENV === 'production'
 const useMicroCache = process.env.MICRO_CACHE !== 'false'
 const serverInfo =
@@ -56,6 +56,23 @@ if (isProd) {
 
 const serve = (path, cache) => express.static(resolve(path), {
   maxAge: cache && isProd ? 1000 * 60 * 60 * 24 * 30 : 0
+})
+
+app.all('/api/*', (req, res, next) => {
+  var ua = req.headers['user-agent']
+  // 为了使后端能得到UA数据
+  if (!(ua.match(/iphone/i) || ua.match(/android/i))) {
+    ua = 'iPhone ' + ua
+  }
+  // console.log(ua)
+  requestProxy({
+    url: 'https://apibaoxian.xueqiu.com/*',
+    // url: 'http://apibaoxian.inter.xueqiu.com/*',
+    headers: {
+      cookie: req.headers.cookie,
+      'User-agent': ua
+    }
+  })(req, res, next)
 })
 
 app.use(compression({ threshold: 0 }))

@@ -1,6 +1,6 @@
 // this is aliased in webpack config based on server/client build
 import { createAPI } from 'create-api'
-
+import axios from '../util/axios'
 const logRequests = !!process.env.DEBUG_API
 
 const api = createAPI({
@@ -41,6 +41,7 @@ function fetch (child) {
   }
 }
 
+
 export function fetchIdsByType (type) {
   return api.cachedIds && api.cachedIds[type]
     ? Promise.resolve(api.cachedIds[type])
@@ -73,4 +74,9 @@ export function watchList (type, cb) {
   return () => {
     ref.off('value', handler)
   }
+}
+
+export function myFetch (url) {
+  console.log('fetch1')
+  return axios.get(url)
 }
